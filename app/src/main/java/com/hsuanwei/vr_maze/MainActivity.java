@@ -142,7 +142,6 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
 
         // Initialize 3D audio engine.
         gvrAudioEngine = new GvrAudioEngine(this, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
-
         random = new Random();
 
     }
@@ -204,6 +203,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
      */
     @Override
     public void onSurfaceCreated(EGLConfig config) {
+        /*
         float[] tmpTriangleCoords = {   // in counterclockwise order:
                 0.0f,  0.2f, 0.0f, // top
                 -0.5f, -0.311004243f, 0.0f, // bottom left
@@ -216,7 +216,8 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
                 {0.5f, 0.5f},
                 {0.5f, -0.5f},
         };
-        mCube = Cube.CreateCubeFrom2D(1.0f, vtex);
+        mCube = new Cube(1.0f, vtex);
+         */
 
         float[] floorColor = {0.6f, 0.6f, 0.6f, 1.0f};
         float[] v1 = {-100.0f, 0.0f, -100.0f};
@@ -263,6 +264,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         try {
             room = new TexturedMesh(this, "CubeRoom.obj", objectPositionParam, objectUvParam);
             roomTex = new Texture(this, "CubeRoom_BakedDiffuse.png");
+            /*
             targetObjectMeshes = new ArrayList<>();
             targetObjectNotSelectedTextures = new ArrayList<>();
             targetObjectSelectedTextures = new ArrayList<>();
@@ -278,11 +280,13 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
                     new TexturedMesh(this, "TriSphere.obj", objectPositionParam, objectUvParam));
             targetObjectNotSelectedTextures.add(new Texture(this, "TriSphere_Blue_BakedDiffuse.png"));
             targetObjectSelectedTextures.add(new Texture(this, "TriSphere_Pink_BakedDiffuse.png"));
+             */
         } catch (IOException e) {
             Log.e(TAG, "Unable to initialize objects", e);
         }
         curTargetObject = random.nextInt(TARGET_MESH_COUNT);
-        maze = new Maze(this);
+
+        maze = new Maze();
     }
 
     /** Updates the target object position. */
@@ -360,14 +364,14 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         drawMaze();
          */
+
         Matrix.multiplyMM(modelView, 0, view, 0, modelRoom, 0);
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         floor.draw(modelViewProjection);
 
         Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
-        mCube.draw(modelViewProjection);
-
+        maze.draw(modelViewProjection);
 
     }
 
@@ -396,13 +400,14 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Util.checkGlError("drawRoom");
     }
 
+    /*
     public void drawMaze() {
         GLES20.glUseProgram(objectProgram);
         GLES20.glUniformMatrix4fv(objectModelViewProjectionParam, 1, false, modelViewProjection, 0);
         maze.texture.bind();
-        maze.draw();
         Util.checkGlError("drawMaze");
     }
+    */
     /**
      * Called when the Cardboard trigger is pulled.
      */
@@ -416,6 +421,8 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         //     gvrAudioEngine.playSound(successSourceId, false /* looping disabled */);
         //     hideTarget();
         // }
+        targetPosition[2] += 0.1f;
+        updateTargetPosition();
     }
 
     /** Find a new random position for the target object. */

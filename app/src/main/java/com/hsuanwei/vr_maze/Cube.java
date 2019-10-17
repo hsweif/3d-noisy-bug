@@ -9,27 +9,33 @@ public class Cube {
     float color1[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
     float color2[] = { 0.367187f, 0.953125f, 0.65625f, 1.0f };
     float color3[] = { 0.1875f, 0.53125f, 0.25f, 1.0f };
+    private static float floorHeight = 0.0f;
 
-    public static Cube CreateCubeFrom2D(float cubeHeight, float[][] vertex)
+
+    public static Cube CreateCubeFromCoord(float[] zeroPoint, int _w, int _h, float cubeWidth, float cubeHeight)
     {
-        try {
-            float[][] stereoVertex = new float[8][3];
-            for(int i = 0; i < 8; i ++) {
-               stereoVertex[i][0] = vertex[i%4][0]; // x
-               stereoVertex[i][2] = vertex[i%4][1]; // z
-               if(i < 4){
-                   stereoVertex[i][1] = cubeHeight - 1.0f; // y
-               }
-               else{
-                   stereoVertex[i][1] = -1.0f;
-               }
+        float zW = zeroPoint[0];
+        float zH = zeroPoint[1];
+        float w = (float)_w;
+        float h = (float)_h;
+        float vertex[][] = {
+                {zW + w * cubeWidth, zH + h * cubeWidth},
+                {zW + (w+1.0f) * cubeWidth, zH + h * cubeWidth},
+                {zW + (w+1.0f) * cubeWidth, zH + (h+1.0f) * cubeWidth},
+                {zW + w * cubeWidth, zH + (h+1.0f) * cubeWidth}
+        };
+        float[][] stereoVertex = new float[8][3];
+        for(int i = 0; i < 8; i ++) {
+            stereoVertex[i][0] = vertex[i%4][0]; // x
+            stereoVertex[i][2] = vertex[i%4][1]; // z
+            if(i < 4){
+                stereoVertex[i][1] = cubeHeight + floorHeight; // y
             }
-            return new Cube(stereoVertex);
+            else{
+                stereoVertex[i][1] = floorHeight;
+            }
         }
-        catch (IndexOutOfBoundsException e) {
-            Log.e(TAG, "Invalid vertex to construct the cube.");
-            return null;
-        }
+        return new Cube(stereoVertex);
     }
 
     public Cube(float[][] vertex) {

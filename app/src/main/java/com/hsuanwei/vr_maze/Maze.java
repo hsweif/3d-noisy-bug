@@ -10,28 +10,42 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class Maze {
-    private int cubeWidth;
-    private int cubeHeight;
     private int mazeSize;
     private Pair entryPoint; // First: x, Second: y
     private List<Cube> cubeList;
     public Texture texture;
+    private int mazeWidth = 4;
+    private int mazeHeight = 4;
+    private float cubeWidth = 0.3f;
+    private float cubeHeight = 0.5f;
+    private int maze[][] = {
+        {1, 0, 0, 1},
+        {0, 1, 0, 1},
+        {0, 1, 0, 0},
+        {0, 0, 1, 0}
+    };
+    private float[] zeroPoint;
 
-    public Maze(Context context){
-       cubeList = new ArrayList<>();
-       Pair<Float, Float>[] vertex = new Pair[10];
-       vertex[0] = new Pair<>(0.0f, 0.0f);
-       vertex[1] = new Pair<>(0.0f, 0.1f);
-       vertex[2] = new Pair<>(0.1f, 0.1f);
-       vertex[3] = new Pair<>(0.1f, 0.0f);
-       try {
-           texture = new Texture(context, "Icosahedron_Blue_BakedDiffuse.png");
-       }
-       catch (IOException e) {
-
-       }
+    public Maze(){
+        zeroPoint = new float[2];
+        zeroPoint[0] = -0.5f;
+        zeroPoint[1] = -0.5f;
+        cubeList = new ArrayList<>();
+        for(int w = 0; w < mazeWidth; w++)
+        {
+            for(int h = 0; h < mazeHeight; h ++)
+            {
+                if(maze[w][h] == 1) {
+                    cubeList.add(Cube.CreateCubeFromCoord(zeroPoint, w, h, cubeWidth, cubeHeight));
+                }
+            }
+        }
     }
 
-    public void draw() {
+    public void draw(float[] mvpMatrix) {
+        for(int i = 0; i < cubeList.size(); i ++)
+        {
+            cubeList.get(i).draw(mvpMatrix);
+        }
     }
 }
