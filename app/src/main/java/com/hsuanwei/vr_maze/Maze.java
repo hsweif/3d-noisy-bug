@@ -30,12 +30,8 @@ public class Maze {
        catch (IOException e) {
 
        }
-       cubeList.add(new Cube(0.5f, vertex, texture));
     }
 
     public void draw() {
-        for (int i = 0; i < cubeList.size(); i++) {
-            cubeList.get(i).draw();
-        }
     }
 }

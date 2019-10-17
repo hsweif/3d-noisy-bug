@@ -25,7 +25,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 
 
 public class MainActivity extends GvrActivity implements GvrView.StereoRenderer {
-    private static final String TAG = "HelloVrActivity";
+    private static final String TAG = "MainActivity";
 
     private static final int TARGET_MESH_COUNT = 3;
 
@@ -116,6 +116,8 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
 
     private Maze maze;
     private Triangle mTriangle;
+    private Cube mCube;
+    private Rectangle floor;
     /**
      * Sets the view to our GvrView and initializes the transformation matrices we will use
      * to render our scene.
@@ -142,6 +144,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         gvrAudioEngine = new GvrAudioEngine(this, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
 
         random = new Random();
+
     }
 
     public void initializeGvrView() {
@@ -190,6 +193,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Log.i(TAG, "onSurfaceChanged");
     }
 
+    private Rectangle mRectangle;
     /**
      * Creates the buffers we use to store information about the 3D world.
      *
@@ -200,8 +204,26 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
      */
     @Override
     public void onSurfaceCreated(EGLConfig config) {
+        float[] tmpTriangleCoords = {   // in counterclockwise order:
+                0.0f,  0.2f, 0.0f, // top
+                -0.5f, -0.311004243f, 0.0f, // bottom left
+                0.5f, -0.311004243f, 0.0f  // bottom right
+        };
+        // mTriangle = new Triangle(tmpTriangleCoords);
+        float [][] vtex = {
+                {-0.5f, -0.5f},
+                {-0.5f, 0.5f},
+                {0.5f, 0.5f},
+                {0.5f, -0.5f},
+        };
+        mCube = Cube.CreateCubeFrom2D(1.0f, vtex);
 
-        mTriangle = new Triangle();
+        float[] floorColor = {0.6f, 0.6f, 0.6f, 1.0f};
+        float[] v1 = {-100.0f, 0.0f, -100.0f};
+        float[] v2 = {100.0f, 0.0f, -100.0f};
+        float[] v3 = {100.0f, 0.0f, 100.0f};
+        float[] v4 = {-100.0f, 0.0f, 100.0f};
+        floor = new Rectangle(v1, v2, v3, v4, floorColor);
 
         Log.i(TAG, "onSurfaceCreated");
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -338,9 +360,14 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         drawMaze();
          */
+        Matrix.multiplyMM(modelView, 0, view, 0, modelRoom, 0);
+        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
+        floor.draw(modelViewProjection);
+
         Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
-        mTriangle.draw(modelViewProjection);
+        mCube.draw(modelViewProjection);
+
 
     }
 
@@ -383,11 +410,12 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
     public void onCardboardTrigger() {
         Log.i(TAG, "onCardboardTrigger");
 
-        if (isLookingAtTarget()) {
-            successSourceId = gvrAudioEngine.createStereoSound(SUCCESS_SOUND_FILE);
-            gvrAudioEngine.playSound(successSourceId, false /* looping disabled */);
-            hideTarget();
-        }
+        // TODO: Moving in the maze
+        // if (isLookingAtTarget()) {
+        //     successSourceId = gvrAudioEngine.createStereoSound(SUCCESS_SOUND_FILE);
+        //     gvrAudioEngine.playSound(successSourceId, false /* looping disabled */);
+        //     hideTarget();
+        // }
     }
 
     /** Find a new random position for the target object. */
