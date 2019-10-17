@@ -113,6 +113,9 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
     // should be shutdown via a {@link Value#close()} call when no longer needed.
     private final Value floorHeight = new Value();
 
+
+    private Maze maze;
+    private Triangle mTriangle;
     /**
      * Sets the view to our GvrView and initializes the transformation matrices we will use
      * to render our scene.
@@ -197,13 +200,15 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
      */
     @Override
     public void onSurfaceCreated(EGLConfig config) {
+
+        mTriangle = new Triangle();
+
         Log.i(TAG, "onSurfaceCreated");
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         objectProgram = Util.compileProgram(OBJECT_VERTEX_SHADER_CODE, OBJECT_FRAGMENT_SHADER_CODE);
         objectPositionParam = GLES20.glGetAttribLocation(objectProgram, "a_Position");
         objectUvParam = GLES20.glGetAttribLocation(objectProgram, "a_UV");
         objectModelViewProjectionParam = GLES20.glGetUniformLocation(objectProgram, "u_MVP");
-
         Util.checkGlError("Object program params");
 
         Matrix.setIdentityM(modelRoom, 0);
@@ -255,6 +260,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
             Log.e(TAG, "Unable to initialize objects", e);
         }
         curTargetObject = random.nextInt(TARGET_MESH_COUNT);
+        maze = new Maze(this);
     }
 
     /** Updates the target object position. */
@@ -318,6 +324,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         // for calculating the position of the target object.
         float[] perspective = eye.getPerspective(Z_NEAR, Z_FAR);
 
+        /*
         Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         drawTarget();
@@ -326,6 +333,13 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Matrix.multiplyMM(modelView, 0, view, 0, modelRoom, 0);
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         drawRoom();
+
+        Matrix.multiplyMM(modelView, 0, view, 0, modelRoom, 0);
+        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
+        drawMaze();
+         */
+        mTriangle.draw();
+
     }
 
     @Override
@@ -353,6 +367,13 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Util.checkGlError("drawRoom");
     }
 
+    public void drawMaze() {
+        GLES20.glUseProgram(objectProgram);
+        GLES20.glUniformMatrix4fv(objectModelViewProjectionParam, 1, false, modelViewProjection, 0);
+        maze.texture.bind();
+        maze.draw();
+        Util.checkGlError("drawMaze");
+    }
     /**
      * Called when the Cardboard trigger is pulled.
      */
@@ -405,5 +426,19 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
 
         float angle = Util.angleBetweenVectors(tempPosition, FORWARD_VEC);
         return angle < ANGLE_LIMIT;
+    }
+
+
+    public static int loadShader(int type, String shaderCode){
+
+        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
+        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
+        int shader = GLES20.glCreateShader(type);
+
+        // add the source code to the shader and compile it
+        GLES20.glShaderSource(shader, shaderCode);
+        GLES20.glCompileShader(shader);
+
+        return shader;
     }
 }
