@@ -338,7 +338,9 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         drawMaze();
          */
-        mTriangle.draw();
+        Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
+        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
+        mTriangle.draw(modelViewProjection);
 
     }
 
