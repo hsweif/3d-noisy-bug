@@ -9,7 +9,7 @@ public class Cube {
     float color1[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
     float color2[] = { 0.367187f, 0.953125f, 0.65625f, 1.0f };
     float color3[] = { 0.1875f, 0.53125f, 0.25f, 1.0f };
-    private static float floorHeight = 0.0f;
+    private static float floorHeight = -1.0f;
 
 
     public static Cube CreateCubeFromCoord(float[] zeroPoint, int _w, int _h, float cubeWidth, float cubeHeight)
@@ -49,7 +49,7 @@ public class Cube {
     }
 
     public void draw(float[] mvpMatrix) {
-        for(int i = 0; i < 8; i ++) {
+        for(int i = 0; i < 6; i ++) {
             mRectangles[i].draw(mvpMatrix);
         }
     }

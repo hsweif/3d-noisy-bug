@@ -203,29 +203,12 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
      */
     @Override
     public void onSurfaceCreated(EGLConfig config) {
-        /*
-        float[] tmpTriangleCoords = {   // in counterclockwise order:
-                0.0f,  0.2f, 0.0f, // top
-                -0.5f, -0.311004243f, 0.0f, // bottom left
-                0.5f, -0.311004243f, 0.0f  // bottom right
-        };
-        // mTriangle = new Triangle(tmpTriangleCoords);
-        float [][] vtex = {
-                {-0.5f, -0.5f},
-                {-0.5f, 0.5f},
-                {0.5f, 0.5f},
-                {0.5f, -0.5f},
-        };
-        mCube = new Cube(1.0f, vtex);
-         */
-
         float[] floorColor = {0.6f, 0.6f, 0.6f, 1.0f};
         float[] v1 = {-100.0f, 0.0f, -100.0f};
         float[] v2 = {100.0f, 0.0f, -100.0f};
         float[] v3 = {100.0f, 0.0f, 100.0f};
         float[] v4 = {-100.0f, 0.0f, 100.0f};
         floor = new Rectangle(v1, v2, v3, v4, floorColor);
-
         Log.i(TAG, "onSurfaceCreated");
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         objectProgram = Util.compileProgram(OBJECT_VERTEX_SHADER_CODE, OBJECT_FRAGMENT_SHADER_CODE);
@@ -258,34 +241,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
                 .start();
 
         updateTargetPosition();
-
         Util.checkGlError("onSurfaceCreated");
-
-        try {
-            room = new TexturedMesh(this, "CubeRoom.obj", objectPositionParam, objectUvParam);
-            roomTex = new Texture(this, "CubeRoom_BakedDiffuse.png");
-            /*
-            targetObjectMeshes = new ArrayList<>();
-            targetObjectNotSelectedTextures = new ArrayList<>();
-            targetObjectSelectedTextures = new ArrayList<>();
-            targetObjectMeshes.add(
-                    new TexturedMesh(this, "Icosahedron.obj", objectPositionParam, objectUvParam));
-            targetObjectNotSelectedTextures.add(new Texture(this, "Icosahedron_Blue_BakedDiffuse.png"));
-            targetObjectSelectedTextures.add(new Texture(this, "Icosahedron_Pink_BakedDiffuse.png"));
-            targetObjectMeshes.add(
-                    new TexturedMesh(this, "QuadSphere.obj", objectPositionParam, objectUvParam));
-            targetObjectNotSelectedTextures.add(new Texture(this, "QuadSphere_Blue_BakedDiffuse.png"));
-            targetObjectSelectedTextures.add(new Texture(this, "QuadSphere_Pink_BakedDiffuse.png"));
-            targetObjectMeshes.add(
-                    new TexturedMesh(this, "TriSphere.obj", objectPositionParam, objectUvParam));
-            targetObjectNotSelectedTextures.add(new Texture(this, "TriSphere_Blue_BakedDiffuse.png"));
-            targetObjectSelectedTextures.add(new Texture(this, "TriSphere_Pink_BakedDiffuse.png"));
-             */
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to initialize objects", e);
-        }
-        curTargetObject = random.nextInt(TARGET_MESH_COUNT);
-
         maze = new Maze();
     }
 
@@ -293,7 +249,6 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
     private void updateTargetPosition() {
         Matrix.setIdentityM(modelTarget, 0);
         Matrix.translateM(modelTarget, 0, targetPosition[0], targetPosition[1], targetPosition[2]);
-
         // Update the sound location to match it with the new target position.
         if (sourceId != GvrAudioEngine.INVALID_ID) {
             gvrAudioEngine.setSoundObjectPosition(
@@ -350,21 +305,6 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         // for calculating the position of the target object.
         float[] perspective = eye.getPerspective(Z_NEAR, Z_FAR);
 
-        /*
-        Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
-        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
-        drawTarget();
-
-        // Set modelView for the room, so it's drawn in the correct location
-        Matrix.multiplyMM(modelView, 0, view, 0, modelRoom, 0);
-        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
-        drawRoom();
-
-        Matrix.multiplyMM(modelView, 0, view, 0, modelRoom, 0);
-        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
-        drawMaze();
-         */
-
         Matrix.multiplyMM(modelView, 0, view, 0, modelRoom, 0);
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         floor.draw(modelViewProjection);
@@ -382,32 +322,10 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
     public void drawTarget() {
         GLES20.glUseProgram(objectProgram);
         GLES20.glUniformMatrix4fv(objectModelViewProjectionParam, 1, false, modelViewProjection, 0);
-        if (isLookingAtTarget()) {
-            targetObjectSelectedTextures.get(curTargetObject).bind();
-        } else {
-            targetObjectNotSelectedTextures.get(curTargetObject).bind();
-        }
         targetObjectMeshes.get(curTargetObject).draw();
         Util.checkGlError("drawTarget");
     }
 
-    /** Draw the room. */
-    public void drawRoom() {
-        GLES20.glUseProgram(objectProgram);
-        GLES20.glUniformMatrix4fv(objectModelViewProjectionParam, 1, false, modelViewProjection, 0);
-        roomTex.bind();
-        room.draw();
-        Util.checkGlError("drawRoom");
-    }
-
-    /*
-    public void drawMaze() {
-        GLES20.glUseProgram(objectProgram);
-        GLES20.glUniformMatrix4fv(objectModelViewProjectionParam, 1, false, modelViewProjection, 0);
-        maze.texture.bind();
-        Util.checkGlError("drawMaze");
-    }
-    */
     /**
      * Called when the Cardboard trigger is pulled.
      */
@@ -416,53 +334,8 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Log.i(TAG, "onCardboardTrigger");
 
         // TODO: Moving in the maze
-        // if (isLookingAtTarget()) {
-        //     successSourceId = gvrAudioEngine.createStereoSound(SUCCESS_SOUND_FILE);
-        //     gvrAudioEngine.playSound(successSourceId, false /* looping disabled */);
-        //     hideTarget();
-        // }
         targetPosition[2] += 0.1f;
         updateTargetPosition();
-    }
-
-    /** Find a new random position for the target object. */
-    private void hideTarget() {
-        float[] rotationMatrix = new float[16];
-        float[] posVec = new float[4];
-
-        // Matrix.setRotateM takes the angle in degrees, but Math.tan takes the angle in radians, so
-        // yaw is in degrees and pitch is in radians.
-        float yawDegrees = (random.nextFloat() - 0.5f) * 2.0f * MAX_YAW;
-        float pitchRadians = (float) Math.toRadians((random.nextFloat() - 0.5f) * 2.0f * MAX_PITCH);
-
-        Matrix.setRotateM(rotationMatrix, 0, yawDegrees, 0.0f, 1.0f, 0.0f);
-        targetDistance =
-                random.nextFloat() * (MAX_TARGET_DISTANCE - MIN_TARGET_DISTANCE) + MIN_TARGET_DISTANCE;
-        targetPosition = new float[] {0.0f, 0.0f, -targetDistance};
-        Matrix.setIdentityM(modelTarget, 0);
-        Matrix.translateM(modelTarget, 0, targetPosition[0], targetPosition[1], targetPosition[2]);
-        Matrix.multiplyMV(posVec, 0, rotationMatrix, 0, modelTarget, 12);
-
-        targetPosition[0] = posVec[0];
-        targetPosition[1] = (float) Math.tan(pitchRadians) * targetDistance;
-        targetPosition[2] = posVec[2];
-
-        updateTargetPosition();
-        curTargetObject = random.nextInt(TARGET_MESH_COUNT);
-    }
-
-    /**
-     * Check if user is looking at the target object by calculating where the object is in eye-space.
-     *
-     * @return true if the user is looking at the target object.
-     */
-    private boolean isLookingAtTarget() {
-        // Convert object space to camera space. Use the headView from onNewFrame.
-        Matrix.multiplyMM(modelView, 0, headView, 0, modelTarget, 0);
-        Matrix.multiplyMV(tempPosition, 0, modelView, 0, POS_MATRIX_MULTIPLY_VEC, 0);
-
-        float angle = Util.angleBetweenVectors(tempPosition, FORWARD_VEC);
-        return angle < ANGLE_LIMIT;
     }
 
 
@@ -471,11 +344,9 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
         int shader = GLES20.glCreateShader(type);
-
         // add the source code to the shader and compile it
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
-
         return shader;
     }
 }
