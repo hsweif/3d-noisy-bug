@@ -265,7 +265,8 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
     @Override
     public void onNewFrame(HeadTransform headTransform) {
         // Build the camera matrix and apply it to the ModelView.
-        Matrix.setLookAtM(camera, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(camera, 0, 0.0f, 0.0f, 0.0f, 0.0f, -0.8f, -1.0f, 0.0f, 1.0f, 0.0f);
+        initCameraPos();
 
         if (gvrProperties.get(PropertyType.TRACKING_FLOOR_HEIGHT, floorHeight)) {
             // The floor height can change each frame when tracking system detects a new floor position.
@@ -313,6 +314,15 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         maze.draw(modelViewProjection);
 
+    }
+
+
+    private void initCameraPos()
+    {
+        float[] entryCoords = maze.entryCoords();
+        targetPosition[0] = entryCoords[0];
+        targetPosition[2] = entryCoords[1];
+        updateTargetPosition();
     }
 
     @Override

@@ -1,26 +1,28 @@
 package com.hsuanwei.vr_maze;
 
 import android.util.Log;
-import android.util.Pair;
 
 public class Maze {
-    private int mazeSize;
-    private Pair entryPoint; // First: x, Second: y
+    private static int[] entryPoint = {4, 9}; // first: vertical, second: horizontal
     private Cube[] cubeList;
     public Texture texture;
-    private int mazeWidth = 6;
-    private int mazeHeight = 6;
-    private float cubeWidth = 0.3f;
-    private float cubeHeight = 0.5f;
+    private static int mazeWidth = 10;
+    private static int mazeHeight = 10;
+    private static float cubeWidth = 0.2f;
+    private static float cubeHeight = 0.4f;
     private static String TAG = "Maze";
     private int cubeSum;
     private int maze[][] = {
-        {1, 0, 1, 1, 1, 1},
-        {1, 0, 0, 1, 0, 1},
-        {1, 1, 0, 1, 0, 1},
-        {1, 1, 0, 1, 0, 1},
-        {1, 0, 0, 0, 0, 1},
-        {1, 1, 1, 1, 0, 1}
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 0, 0, 0, 0, 0, 1, 1, 0, 1},
+        {1, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+        {1, 0, 1, 1, 1, 1, 1, 0, 1, 1},
+        {1, 0, 0, 0, 1, 0, 1, 0, 0, 0},
+        {1, 0, 1, 0, 0, 0, 1, 0, 1, 1},
+        {1, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+        {1, 0, 1, 1, 1, 0, 1, 1, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 1, 0, 1, 1, 1, 1, 1, 1, 1},
     };
     private float[] zeroPoint;
 
@@ -58,5 +60,11 @@ public class Maze {
                 }
             }
         }
+    }
+
+    public float[] entryCoords()
+    {
+        float[] coords = {-(zeroPoint[0] + entryPoint[0] * cubeWidth), -(zeroPoint[1] + entryPoint[1] * cubeWidth)};
+        return coords;
     }
 }
