@@ -1,15 +1,19 @@
 package com.hsuanwei.vr_maze;
 
 
+import org.w3c.dom.Text;
+
 public class Cube {
     private static final String TAG = "Cube";
     private Rectangle[] mRectangles;
-    private static float floorHeight = -1.0f;
+    private static float floorHeight = 0.0f;
     private final float[] vertices;
     private final short[] indices;
+    private final float[] uv;
+    private final float TEXTURE_STRIDE = 2.0f;
     private Renderer renderer;
-    private Texture texture;
 
+    /*
     public static Cube CreateCubeFromCoord(float[] zeroPoint, int _w, int _h, float cubeWidth, float cubeHeight)
     {
         float zW = zeroPoint[0];
@@ -35,6 +39,7 @@ public class Cube {
         }
         return new Cube(0.0f, 0.0f);
     }
+     */
 
     /*
     public Cube(float[][] vertex) {
@@ -48,7 +53,7 @@ public class Cube {
     }
      */
 
-    public Cube(float cubeWidth, float cubeHeight) {
+    public Cube(float cubeWidth, float cubeHeight, Texture texture) {
         vertices = new float [] {
             0.0f, floorHeight, 0.0f,
             cubeWidth, floorHeight, 0.0f,
@@ -73,11 +78,27 @@ public class Cube {
                 1, 0, 4,
                 1, 4, 5
         };
+        uv = new float[] {
+            0.0f, 0.0f,
+            TEXTURE_STRIDE, 0.0f,
+            TEXTURE_STRIDE, TEXTURE_STRIDE,
+            0.0f, TEXTURE_STRIDE,
+            TEXTURE_STRIDE, TEXTURE_STRIDE,
+            0.0f, TEXTURE_STRIDE,
+            0.0f, 0.0f,
+            TEXTURE_STRIDE, 0.0f,
+        };
+        /*
+        A: 0,0
+        B: 1,0
+        C: 1,1
+        D: 0,1
+         */
         /*
         1 0
         5 4
          */
-        // renderer = new Renderer(vertices, indices);
+        renderer = new TextureRenderer(vertices, indices, uv, texture);
     }
 
     public void draw(float[] mvpMatrix) {
@@ -86,9 +107,7 @@ public class Cube {
             mRectangles[i].draw(mvpMatrix);
         }
         */
-        float color[] = { 0.33f, 0.33f, 0.33f, 1.0f };
-        renderer.draw(mvpMatrix, color);
+        renderer.draw(mvpMatrix);
     }
-
 
 }

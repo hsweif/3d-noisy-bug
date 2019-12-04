@@ -1,6 +1,5 @@
 package com.hsuanwei.vr_maze;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 // OpenGL
 import android.opengl.GLES20;
@@ -49,6 +48,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
     private static final float MAX_YAW = 100.0f;
     private static final float MAX_PITCH = 25.0f;
 
+    /*
     private static final String[] OBJECT_VERTEX_SHADER_CODE =
             new String[] {
                     "uniform mat4 u_MVP;",
@@ -78,7 +78,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
     public int objectPositionParam;
     private int objectUvParam;
     public static int objectModelViewProjectionParam;
-
+    */
 
     private float targetDistance = MAX_TARGET_DISTANCE;
 
@@ -206,15 +206,15 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
     @Override
     public void onSurfaceCreated(EGLConfig config) {
 
-        // maze = new Maze();
-        // mCube = new Cube(0.5f, 0.5f);
         Log.i(TAG, "onSurfaceCreated");
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        /*
         objectProgram = Util.compileProgram(OBJECT_VERTEX_SHADER_CODE, OBJECT_FRAGMENT_SHADER_CODE);
         objectPositionParam = GLES20.glGetAttribLocation(objectProgram, "a_Position");
         objectUvParam = GLES20.glGetAttribLocation(objectProgram, "a_UV");
         objectModelViewProjectionParam = GLES20.glGetUniformLocation(objectProgram, "u_MVP");
         Util.checkGlError("Object program params");
+         */
 
         Matrix.setIdentityM(modelRoom, 0);
         Matrix.translateM(modelRoom, 0, 0, DEFAULT_FLOOR_HEIGHT, 0);
@@ -252,16 +252,19 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
                 0, 2, 3
         };
         float[] rectUV = {
-                0.0f, 0.1f,
-                0.1f, 1.0f,
-                1.0f, 0.0f,
+                0.0f, 10.0f,
+                10.0f, 10.0f,
+                10.0f, 0.0f,
                 0.0f, 0.0f,
         };
         try {
-            floorTexture = new Texture(this, "floor.png");
-            floor = new Rectangle(rectVertices, rectIndices, rectUV, floorTexture, objectPositionParam, objectUvParam);
+            Texture mazeTexture = new Texture(this, "marble.png");
+            floorTexture = new Texture(this, "wood.png");
+            floor = new Rectangle(rectVertices, rectIndices, rectUV, floorTexture);
+            maze = new Maze(mazeTexture);
+            mCube = new Cube(0.5f, 0.5f, mazeTexture);
         } catch (IOException e) {
-            floor = new Rectangle(rectVertices, rectIndices, rectUV, null, objectPositionParam, objectUvParam);
+            floor = new Rectangle(rectVertices, rectIndices, rectUV, null);
             Log.e(TAG, "Unable to initialize objects", e);
         }
     }
@@ -331,17 +334,16 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         floor.draw(modelViewProjection);
 
-        // Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
-        // Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
+        Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
+        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         // mCube.draw(modelViewProjection);
-        // maze.draw(modelTarget, view, perspective);
+        maze.draw(modelTarget, view, perspective);
     }
 
     private boolean initialized = false;
 
     private void initCameraPos()
     {
-        /*
         if (!initialized)
         {
             float[] entryCoords = maze.entryCoords();
@@ -350,7 +352,6 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
             updateTargetPosition();
             initialized = true;
         }
-         */
     }
 
     @Override

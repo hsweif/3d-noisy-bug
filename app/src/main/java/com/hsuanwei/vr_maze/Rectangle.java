@@ -10,17 +10,15 @@ public class Rectangle {
     private float[] color = {0.6f, 0.6f, 0.6f, 1.0f};
     private Renderer renderer;
 
-    public Rectangle(float[] _vertices, short[] _indices, float[] _uv, Texture texture, int positionAttrib, int uvAttrib) {
+    public Rectangle(float[] _vertices, short[] _indices, float[] _uv, Texture texture) {
         vertices = _vertices;
         indices = _indices;
         uv = _uv;
-        renderer = new Renderer(vertices, indices, uv, texture);
-        renderer.SetTexturedMesh(positionAttrib, uvAttrib);
+        renderer = new TextureRenderer(vertices, indices, uv, texture);
     }
 
     public void draw(float[] mvpMatrix)
     {
-        // renderer.draw(mvpMatrix, color);
         renderer.draw(mvpMatrix);
     }
 }

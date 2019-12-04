@@ -1,5 +1,6 @@
 package com.hsuanwei.vr_maze;
 
+import android.content.Context;
 import android.opengl.Matrix;
 import android.util.Log;
 
@@ -9,15 +10,15 @@ public class Maze {
     public Texture texture;
     private static int mazeWidth = 3;
     private static int mazeHeight = 3;
-    public static float cubeWidth = 0.1f;
-    private static float cubeHeight = 0.1f;
+    public static float cubeWidth = 0.5f;
+    private static float cubeHeight = 1.0f;
     private static String TAG = "Maze";
     private int cubeSum;
-    private String curFacing = "left";
     private int[] curPos;
     private float[] modelMaze;
     private float[] modelProjection;
     private float[] modelView;
+    private float floorHeight = 1.0f;
     private Cube cube;
     /*
     private int maze[][] = {
@@ -41,7 +42,7 @@ public class Maze {
     };
     private float[] zeroPoint;
 
-    public Maze(){
+    public Maze(Texture texture){
         zeroPoint = new float[2];
         curPos = new int[2];
         zeroPoint[0] = -0.5f;
@@ -52,7 +53,7 @@ public class Maze {
         modelView = new float[16];
         modelProjection = new float[16];
         // initCubes();
-        cube = new Cube(cubeWidth, cubeHeight);
+        cube = new Cube(cubeWidth, cubeHeight, texture);
     }
 
     public void draw(float[] modelTarget, float[] view, float[] perspective) {
@@ -71,7 +72,7 @@ public class Maze {
                     hOffset = h * cubeWidth;
                     Log.i(TAG, "draw cube");
                     modelMaze = modelTarget.clone();
-                    Matrix.translateM(modelMaze, 0, wOffset, 0, hOffset);
+                    Matrix.translateM(modelMaze, 0, wOffset, -floorHeight, hOffset);
                     Matrix.multiplyMM(modelView, 0, view,0, modelMaze,0);
                     Matrix.multiplyMM(modelProjection, 0, perspective, 0, modelView, 0);
                     cube.draw(modelProjection);
@@ -80,6 +81,7 @@ public class Maze {
         }
     }
 
+    /*
     private void initCubes() {
         cubeSum = 0;
         for(int w = 0; w < mazeWidth; w++) {
@@ -99,6 +101,7 @@ public class Maze {
             }
         }
     }
+     */
 
     public float[] entryCoords()
     {
