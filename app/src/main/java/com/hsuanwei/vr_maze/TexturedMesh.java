@@ -72,6 +72,14 @@ import java.nio.ShortBuffer;
     this.uvAttrib = uvAttrib;
   }
 
+  public TexturedMesh(FloatBuffer vertices, FloatBuffer uv, ShortBuffer indices, int positionAttrib, int uvAttrib)
+  {
+    this.vertices = vertices;
+    this.uv = uv;
+    this.indices = indices;
+    this.positionAttrib = positionAttrib;
+    this.uvAttrib = uvAttrib;
+  }
   /**
    * Draws the mesh. Before this is called, u_MVP should be set with glUniformMatrix4fv(), and a
    * texture should be bound to GL_TEXTURE0.

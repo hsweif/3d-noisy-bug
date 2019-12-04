@@ -5,7 +5,6 @@ import android.os.Bundle;
 // OpenGL
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.google.vr.ndk.base.Properties;
@@ -18,6 +17,7 @@ import com.google.vr.sdk.base.GvrActivity;
 import com.google.vr.sdk.base.GvrView;
 import com.google.vr.sdk.base.HeadTransform;
 import com.google.vr.sdk.base.Viewport;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -74,11 +74,11 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
                     "}",
             };
 
-    private int objectProgram;
-
-    private int objectPositionParam;
+    public static int objectProgram;
+    public int objectPositionParam;
     private int objectUvParam;
-    private int objectModelViewProjectionParam;
+    public static int objectModelViewProjectionParam;
+
 
     private float targetDistance = MAX_TARGET_DISTANCE;
 
@@ -115,9 +115,11 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
 
 
     private Maze maze;
-    private Triangle mTriangle;
-    private Cube mCube;
     private Rectangle floor;
+    private Cube mCube;
+    private float[] forwardVec;
+    private Texture floorTexture;
+
     /**
      * Sets the view to our GvrView and initializes the transformation matrices we will use
      * to render our scene.
@@ -139,11 +141,11 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         modelTarget = new float[16];
         modelRoom = new float[16];
         headView = new float[16];
+        forwardVec = new float[3];
 
         // Initialize 3D audio engine.
         gvrAudioEngine = new GvrAudioEngine(this, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
         random = new Random();
-
     }
 
     public void initializeGvrView() {
@@ -203,12 +205,9 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
      */
     @Override
     public void onSurfaceCreated(EGLConfig config) {
-        float[] floorColor = {0.6f, 0.6f, 0.6f, 1.0f};
-        float[] v1 = {-100.0f, 0.0f, -100.0f};
-        float[] v2 = {100.0f, 0.0f, -100.0f};
-        float[] v3 = {100.0f, 0.0f, 100.0f};
-        float[] v4 = {-100.0f, 0.0f, 100.0f};
-        floor = new Rectangle(v1, v2, v3, v4, floorColor);
+
+        // maze = new Maze();
+        // mCube = new Cube(0.5f, 0.5f);
         Log.i(TAG, "onSurfaceCreated");
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         objectProgram = Util.compileProgram(OBJECT_VERTEX_SHADER_CODE, OBJECT_FRAGMENT_SHADER_CODE);
@@ -242,7 +241,29 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
 
         updateTargetPosition();
         Util.checkGlError("onSurfaceCreated");
-        maze = new Maze();
+        float[] rectVertices = {
+                -30.0f, 0.0f, -30.0f,
+                30.0f, 0.0f, -30.0f,
+                30.0f, 0.0f, 30.0f,
+                -30.0f, 0.0f, 30.0f,
+        };
+        short[] rectIndices = {
+                0, 1, 2,
+                0, 2, 3
+        };
+        float[] rectUV = {
+                0.0f, 0.1f,
+                0.1f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+        };
+        try {
+            floorTexture = new Texture(this, "floor.png");
+            floor = new Rectangle(rectVertices, rectIndices, rectUV, floorTexture, objectPositionParam, objectUvParam);
+        } catch (IOException e) {
+            floor = new Rectangle(rectVertices, rectIndices, rectUV, null, objectPositionParam, objectUvParam);
+            Log.e(TAG, "Unable to initialize objects", e);
+        }
     }
 
     /** Updates the target object position. */
@@ -264,10 +285,10 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
      */
     @Override
     public void onNewFrame(HeadTransform headTransform) {
-        // Build the camera matrix and apply it to the ModelView.
-        Matrix.setLookAtM(camera, 0, 0.0f, 0.0f, 0.0f, 0.0f, -0.8f, -1.0f, 0.0f, 1.0f, 0.0f);
-        initCameraPos();
 
+        // Build the camera matrix and apply it to the ModelView.
+        Matrix.setLookAtM(camera, 0, 0.0f, -0.8f, 0.0f, 0.0f, -0.8f, -1.0f, 0.0f, 1.0f, 0.0f);
+        initCameraPos();
         if (gvrProperties.get(PropertyType.TRACKING_FLOOR_HEIGHT, floorHeight)) {
             // The floor height can change each frame when tracking system detects a new floor position.
             Matrix.setIdentityM(modelRoom, 0);
@@ -275,6 +296,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         } // else the device doesn't support floor height detection so DEFAULT_FLOOR_HEIGHT is used.
 
         headTransform.getHeadView(headView, 0);
+        headTransform.getForwardVector(forwardVec, 0);
 
         // Update the 3d audio engine with the most recent head rotation.
         headTransform.getQuaternion(headRotation, 0);
@@ -282,7 +304,6 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
                 headRotation[0], headRotation[1], headRotation[2], headRotation[3]);
         // Regular update call to GVR audio engine.
         gvrAudioEngine.update();
-
         Util.checkGlError("onNewFrame");
     }
 
@@ -310,47 +331,62 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         floor.draw(modelViewProjection);
 
-        Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
-        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
-        maze.draw(modelViewProjection);
-
+        // Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
+        // Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
+        // mCube.draw(modelViewProjection);
+        // maze.draw(modelTarget, view, perspective);
     }
 
+    private boolean initialized = false;
 
     private void initCameraPos()
     {
-        float[] entryCoords = maze.entryCoords();
-        targetPosition[0] = entryCoords[0];
-        targetPosition[2] = entryCoords[1];
-        updateTargetPosition();
+        /*
+        if (!initialized)
+        {
+            float[] entryCoords = maze.entryCoords();
+            targetPosition[0] = -entryCoords[0];
+            targetPosition[2] = -entryCoords[1];
+            updateTargetPosition();
+            initialized = true;
+        }
+         */
     }
 
     @Override
     public void onFinishFrame(Viewport viewport) {}
 
-    /** Draw the target object. */
-    public void drawTarget() {
-        GLES20.glUseProgram(objectProgram);
-        GLES20.glUniformMatrix4fv(objectModelViewProjectionParam, 1, false, modelViewProjection, 0);
-        targetObjectMeshes.get(curTargetObject).draw();
-        Util.checkGlError("drawTarget");
-    }
 
     /**
      * Called when the Cardboard trigger is pulled.
      */
     @Override
     public void onCardboardTrigger() {
-        Log.i(TAG, "onCardboardTrigger");
-
         // TODO: Moving in the maze
-        targetPosition[2] += 0.1f;
+        // String move = maze.moveTo();
+        // if(move == "left") {
+        //     targetPosition[2] += Maze.cubeWidth;
+        // }
+        if(Math.abs(forwardVec[2]) > Math.abs(forwardVec[0])) {
+            if(forwardVec[2] > 0){
+                Log.i(TAG, "back");
+            }
+            else{
+                Log.i(TAG, "forward");
+            }
+        }
+        else {
+            if(forwardVec[0] > 0) {
+                Log.i(TAG, "right");
+            }
+            else if(forwardVec[0] < 0) {
+                Log.i(TAG, "left");
+            }
+        }
         updateTargetPosition();
     }
 
-
     public static int loadShader(int type, String shaderCode){
-
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
         int shader = GLES20.glCreateShader(type);
