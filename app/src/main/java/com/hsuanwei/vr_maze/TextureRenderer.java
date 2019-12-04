@@ -76,14 +76,6 @@ public final class TextureRenderer extends Renderer {
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, indexBuffer.limit(), GLES20.GL_UNSIGNED_SHORT, indexBuffer);
         GLES20.glDisableVertexAttribArray(positionHandle);
     }
-/*
-    public void draw(float[] mvpMatrix){
-        GLES20.glUseProgram(MainActivity.objectProgram);
-        GLES20.glUniformMatrix4fv(MainActivity.objectModelViewProjectionParam, 1, false, mvpMatrix, 0);
-        texture.bind();
-        texturedMesh.draw();
-    }
- */
 
     public int loadShader(int type, String shaderCode){
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)

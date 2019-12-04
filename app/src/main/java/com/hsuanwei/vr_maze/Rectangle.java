@@ -1,7 +1,6 @@
 package com.hsuanwei.vr_maze;
 
 
-import android.content.Context;
 
 public class Rectangle {
     private float[] vertices;
