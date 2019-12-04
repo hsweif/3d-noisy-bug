@@ -5,11 +5,11 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 public class Maze {
-    private static int[] entryPoint = {0, 0}; // first: vertical, second: horizontal
+    private static int[] entryPoint = {4, 9}; // first: vertical, second: horizontal
     private Cube[] cubeList;
     public Texture texture;
-    private static int mazeWidth = 3;
-    private static int mazeHeight = 3;
+    private static int mazeWidth = 10;
+    private static int mazeHeight = 10;
     public static float cubeWidth = 0.5f;
     private static float cubeHeight = 1.0f;
     private static String TAG = "Maze";
@@ -18,9 +18,8 @@ public class Maze {
     private float[] modelMaze;
     private float[] modelProjection;
     private float[] modelView;
-    private float floorHeight = 1.0f;
+    private float floorHeight = 1.5f;
     private Cube cube;
-    /*
     private int maze[][] = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 0, 0, 1, 1, 0, 1},
@@ -33,13 +32,14 @@ public class Maze {
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 1, 0, 1, 1, 1, 1, 1, 1, 1},
     };
-     */
 
+    /*
     private int maze[][] = {
-            {1, 1, 0},
+            {0, 1, 0},
             {1, 0, 0},
             {1, 0, 0},
     };
+     */
     private float[] zeroPoint;
 
     public Maze(Texture texture){
@@ -105,7 +105,7 @@ public class Maze {
 
     public float[] entryCoords()
     {
-        float[] coords = {zeroPoint[0] + (entryPoint[0]+0.5f) * cubeWidth, zeroPoint[1] + (entryPoint[1]+0.5f) * cubeWidth};
+        float[] coords = {zeroPoint[0] + (entryPoint[0]-0.5f) * cubeWidth, zeroPoint[1] + (entryPoint[1]-0.5f) * cubeWidth};
         return coords;
     }
 

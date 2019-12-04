@@ -258,7 +258,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
                 0.0f, 0.0f,
         };
         try {
-            Texture mazeTexture = new Texture(this, "marble.png");
+            Texture mazeTexture = new Texture(this, "brick.png");
             floorTexture = new Texture(this, "wood.png");
             floor = new Rectangle(rectVertices, rectIndices, rectUV, floorTexture);
             maze = new Maze(mazeTexture);
@@ -368,19 +368,27 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         // if(move == "left") {
         //     targetPosition[2] += Maze.cubeWidth;
         // }
+        if(Math.abs(forwardVec[1]) > Math.abs(forwardVec[0])
+        && Math.abs(forwardVec[1]) > Math.abs(forwardVec[2])) {
+            return;
+        }
         if(Math.abs(forwardVec[2]) > Math.abs(forwardVec[0])) {
             if(forwardVec[2] > 0){
+                targetPosition[2] -= Maze.cubeWidth;
                 Log.i(TAG, "back");
             }
             else{
+                targetPosition[2] += Maze.cubeWidth;
                 Log.i(TAG, "forward");
             }
         }
         else {
             if(forwardVec[0] > 0) {
+                targetPosition[0] -= Maze.cubeWidth;
                 Log.i(TAG, "right");
             }
             else if(forwardVec[0] < 0) {
+                targetPosition[0] += Maze.cubeWidth;
                 Log.i(TAG, "left");
             }
         }
