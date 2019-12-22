@@ -1,7 +1,23 @@
-# vr-maze
+# Google VR SDK for Android
 
-A course work of Tsinghua CST VR course which implement a simple cardboard vr maze without Unity.
+Enables Daydream and Cardboard app development on Android.
 
-## 参考资料
-1. [Android developers guide: Displaying graphics with OpenGL ES](https://developer.android.com/training/graphics/opengl)
-    > 源代码中的 Triangle、Square 的代码是基于官方指南里的示例修改而成的
+Copyright (c) 2018 Google Inc.
+
+See [https://developers.google.com/terms/](https://developers.google.com/terms/)
+for the **Google APIs Terms of Service** which cover this SDK. The code in
+`samples` is covered by the Apache 2 `LICENSE` file in that directory, and the
+files in `assets` are covered by Creative Commons `LICENSE` file in that
+directory.
+
+For updates, known issues, and upgrade instructions, see the
+[release-notes](//github.com/googlevr/gvr-android-sdk/releases).
+
+For first time users, see the
+[Get Started with Google VR on Android](//developers.google.com/vr/android/get-started)
+guide.
+
+SDK releases are availble from the
+[releases](//github.com/googlevr/gvr-android-sdk/releases) page.
+
+Please note, we do not accept pull requests.

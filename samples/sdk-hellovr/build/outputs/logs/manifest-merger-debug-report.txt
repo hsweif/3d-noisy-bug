@@ -1,0 +1,142 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:2:1-58:12
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:2:1-58:12
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:2:1-58:12
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:3:1-28:12
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:2:1-58:12
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:2:1-58:12
+	package
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:3:7-50
+	android:versionName
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:5:7-36
+		INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+		INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:2:11-69
+	android:versionCode
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:4:7-38
+		INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+		INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+uses-feature#0x00020000
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:9:5-78
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:11:5-13:35
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:11:5-13:35
+	android:glEsVersion
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:9:19-51
+	android:required
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:9:52-75
+uses-permission#android.permission.VIBRATE
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:12:5-65
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:12:22-63
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:14:5-79
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:16:5-80
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:16:5-80
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:14:22-77
+uses-feature#android.hardware.sensor.accelerometer
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:17:5-97
+	android:required
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:17:72-95
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:17:19-71
+uses-feature#android.hardware.sensor.gyroscope
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:18:5-93
+	android:required
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:18:68-91
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:18:19-67
+uses-feature#android.software.vr.mode
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:21:5-85
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:20:5-22:36
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:20:5-22:36
+	android:required
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:21:59-83
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:21:19-58
+uses-feature#android.hardware.vr.high_performance
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:23:5-97
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:24:5-26:36
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:24:5-26:36
+	android:required
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:23:71-95
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:23:19-70
+application
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:25:5-57:19
+	android:supportsRtl
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:27:13-39
+	android:label
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:28:13-44
+	android:icon
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:30:13-64
+	android:allowBackup
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:26:13-39
+	android:theme
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:29:13-51
+activity#com.google.vr.sdk.samples.hellovr.HelloVrActivity
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:31:9-56:20
+	android:screenOrientation
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:34:17-54
+	android:label
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:33:17-49
+	android:enableVrMode
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:36:17-69
+	android:resizeableActivity
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:37:17-51
+	android:configChanges
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:35:17-104
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:32:17-48
+meta-data#com.google.android.vr.icon
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:40:13-41:75
+	android:resource
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:41:24-72
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:40:24-65
+meta-data#com.google.android.vr.icon_background
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:42:13-43:74
+	android:resource
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:43:24-71
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:42:24-76
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER+category:name:com.google.intent.category.CARDBOARD+category:name:com.google.intent.category.DAYDREAM
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:45:13-55:29
+action#android.intent.action.MAIN
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:46:17-69
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:46:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:47:17-77
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:47:27-74
+category#com.google.intent.category.CARDBOARD
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:48:17-81
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:48:27-78
+category#com.google.intent.category.DAYDREAM
+ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:54:17-80
+	android:name
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml:54:27-77
+uses-sdk
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:7:5-9:41
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+		INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+		ADDED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+		INJECTED from /Users/alex/workspace/VRGame/mosquito/samples/sdk-hellovr/src/main/AndroidManifest.xml
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:17:5-81
+	android:name
+		ADDED from [com.google.vr:sdk-base:1.190.0] /Users/alex/.gradle/caches/transforms-1/files-1.1/sdk-base-1.190.0.aar/785fc7c4850034bc5f6017cc8d37ba82/AndroidManifest.xml:17:22-78
