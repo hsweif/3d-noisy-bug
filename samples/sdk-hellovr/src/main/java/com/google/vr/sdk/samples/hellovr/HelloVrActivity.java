@@ -16,10 +16,19 @@
 
 package com.google.vr.sdk.samples.hellovr;
 
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewDebug;
+
+import com.google.common.logging.nano.Vr;
 import com.google.vr.ndk.base.Properties;
 import com.google.vr.ndk.base.Properties.PropertyType;
 import com.google.vr.ndk.base.Value;
@@ -33,6 +42,8 @@ import com.google.vr.sdk.base.Viewport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.lang.Math;
+
 import javax.microedition.khronos.egl.EGLConfig;
 
 /**
@@ -58,7 +69,8 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
 
   private static final float MIN_TARGET_DISTANCE = 3.0f;
   private static final float MAX_TARGET_DISTANCE = 3.5f;
-  private static final String OBJECT_SOUND_FILE = "audio/HelloVR_Loop.ogg";
+  // private static final String OBJECT_SOUND_FILE = "audio/HelloVR_Loop.ogg";
+  private static final String OBJECT_SOUND_FILE = "audio/mosquito/1.wav";
   private static final String SUCCESS_SOUND_FILE = "audio/HelloVR_Activation.ogg";
   private static final float DEFAULT_FLOOR_HEIGHT = -1.6f;
 
@@ -126,7 +138,13 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
 
   private GvrAudioEngine gvrAudioEngine;
   private volatile int sourceId = GvrAudioEngine.INVALID_ID;
+  private int[] voiceSourceId;
+  private final int voiceFileNum = 50;
   private volatile int successSourceId = GvrAudioEngine.INVALID_ID;
+  private float[] forwardVec;
+
+  private MediaPlayer mediaPlayer;
+  private AssetManager assetManager;
 
   private Properties gvrProperties;
   // This is an opaque wrapper around an internal GVR property. It is set via Properties and
@@ -154,9 +172,16 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
     modelTarget = new float[16];
     modelRoom = new float[16];
     headView = new float[16];
+    voiceSourceId = new int[voiceFileNum];
+    for (int i = 0; i < voiceFileNum; i ++) {
+      voiceSourceId[i] = GvrAudioEngine.INVALID_ID;
+    }
 
     // Initialize 3D audio engine.
     gvrAudioEngine = new GvrAudioEngine(this, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
+    mediaPlayer = new MediaPlayer();
+    assetManager = getAssets();
+    forwardVec = new float[3];
 
     random = new Random();
   }
@@ -232,6 +257,7 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
     Matrix.translateM(modelRoom, 0, 0, DEFAULT_FLOOR_HEIGHT, 0);
 
     // Avoid any delays during start-up due to decoding of sound files.
+    final Context context = this;
     new Thread(
             new Runnable() {
               @Override
@@ -239,14 +265,22 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
                 // Start spatial audio playback of OBJECT_SOUND_FILE at the model position. The
                 // returned sourceId handle is stored and allows for repositioning the sound object
                 // whenever the target position changes.
-                gvrAudioEngine.preloadSoundFile(OBJECT_SOUND_FILE);
-                sourceId = gvrAudioEngine.createSoundObject(OBJECT_SOUND_FILE);
+                // gvrAudioEngine.preloadSoundFile(OBJECT_SOUND_FILE);
+
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                loadSound(1);
+                mediaPlayer.start();
+                /*
+                sourceId = gvrAudioEngine.createStereoSound(OBJECT_SOUND_FILE);
                 gvrAudioEngine.setSoundObjectPosition(
                     sourceId, targetPosition[0], targetPosition[1], targetPosition[2]);
-                gvrAudioEngine.playSound(sourceId, true /* looped playback */);
+
+                 */
+                // TODO: Should change with rotating.
+                // gvrAudioEngine.playSound(voiceSourceId[0], true );
                 // Preload an unspatialized sound to be played on a successful trigger on the
                 // target.
-                gvrAudioEngine.preloadSoundFile(SUCCESS_SOUND_FILE);
+                // gvrAudioEngine.preloadSoundFile(SUCCESS_SOUND_FILE);
               }
             })
         .start();
@@ -279,6 +313,24 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
     curTargetObject = random.nextInt(TARGET_MESH_COUNT);
   }
 
+
+  private void loadSound(int pos) {
+      try{
+        AssetFileDescriptor assetFileDescriptor = assetManager.openFd("audio/mosquito/"+pos+".wav");
+        mediaPlayer.setDataSource(assetFileDescriptor);
+        mediaPlayer.prepare();
+      }
+      catch (IOException e) {
+        Log.e(TAG, "No file.");
+      }
+      catch (IllegalArgumentException e) {
+        Log.e(TAG, "error in load sound.");
+      }
+      catch (IllegalStateException e) {
+        Log.e(TAG, "error in load sound.");
+      }
+  }
+
   /** Updates the target object position. */
   private void updateTargetPosition() {
     Matrix.setIdentityM(modelTarget, 0);
@@ -309,6 +361,8 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
     } // else the device doesn't support floor height detection so DEFAULT_FLOOR_HEIGHT is used.
 
     headTransform.getHeadView(headView, 0);
+    headTransform.getForwardVector(forwardVec, 0);
+    determinePos();
 
     // Update the 3d audio engine with the most recent head rotation.
     headTransform.getQuaternion(headRotation, 0);
@@ -364,6 +418,13 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
     }
     targetObjectMeshes.get(curTargetObject).draw();
     Util.checkGlError("drawTarget");
+  }
+
+  private void determinePos() {
+      float f_x = forwardVec[0], f_z = forwardVec[2];
+      float x = targetPosition[0], z = targetPosition[2];
+      float theta = (float)Math.acos((f_x*x+f_z*z)/(Math.sqrt(f_x*f_x + f_z*f_z)* Math.sqrt(x*x + z*z)));
+      Log.i(TAG, "angle"+theta);
   }
 
   /** Draw the room. */
