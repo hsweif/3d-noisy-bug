@@ -140,7 +140,7 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
 
     private GvrAudioEngine gvrAudioEngine;
     private volatile int sourceId = GvrAudioEngine.INVALID_ID;
-    private AssetFileDescriptor dataSource[];
+    private int soundId[];
     private final int voiceFileNum = 50;
     private volatile int successSourceId = GvrAudioEngine.INVALID_ID;
     private float[] forwardVec;
@@ -150,6 +150,7 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
 
     private Properties gvrProperties;
     private boolean initialized = false;
+    private boolean loading = false;
     // This is an opaque wrapper around an internal GVR property. It is set via Properties and
     // should be shutdown via a {@link Value#close()} call when no longer needed.
     private final Value floorHeight = new Value();
@@ -185,14 +186,9 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
 
     private void initSound() {
         assetManager = getAssets();
-        dataSource = new AssetFileDescriptor[50];
+        soundId = new int[50];
         for(int i = 1; i <= 50; i ++) {
-            try{
-                dataSource[i-1] = assetManager.openFd("audio/mosquito/"+i+".wav");
-            }
-            catch (IOException e) {
-                Log.e(TAG, "fail to load sound");
-            }
+            soundId[i-1] = getResources().getIdentifier("m_"+i, "raw", getPackageName());
         }
         initialized = true;
     }
@@ -272,26 +268,10 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
                 new Runnable() {
                     @Override
                     public void run() {
-                        // Start spatial audio playback of OBJECT_SOUND_FILE at the model position. The
-                        // returned sourceId handle is stored and allows for repositioning the sound object
-                        // whenever the target position changes.
-                        // gvrAudioEngine.preloadSoundFile(OBJECT_SOUND_FILE);
-                        mediaPlayer = new MediaPlayer();
-                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        mediaPlayer = MediaPlayer.create(context, soundId[0]);
                         mediaPlayer.setLooping(true);
-                        loadSound(1, 0);
-                /*
-                sourceId = gvrAudioEngine.createStereoSound(OBJECT_SOUND_FILE);
-                gvrAudioEngine.setSoundObjectPosition(
-                    sourceId, targetPosition[0], targetPosition[1], targetPosition[2]);
-
-                 */
-                        // TODO: Should change with rotating.
-                        // gvrAudioEngine.playSound(voiceSourceId[0], true );
-                        // Preload an unspatialized sound to be played on a successful trigger on the
-                        // target.
-                        // gvrAudioEngine.preloadSoundFile(SUCCESS_SOUND_FILE);
-                    }
+                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                   }
                 })
                 .start();
 
@@ -325,28 +305,31 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
 
 
     private void loadSound(int pos, int soundMs) {
-        if(mediaPlayer == null || !initialized) {
+        if(mediaPlayer == null || !initialized || loading) {
             return;
         }
         try{
-            // AssetFileDescriptor assetFileDescriptor = assetManager.openFd("audio/mosquito/"+pos+".wav");
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(dataSource[pos-1]);
-            mediaPlayer.prepare();
+            loading = true;
             if(mediaPlayer.isPlaying()) {
-                mediaPlayer.seekTo(soundMs);
+                mediaPlayer.release();
             }
-            Log.i(TAG, "Media duration" + mediaPlayer.getDuration());
+            mediaPlayer = MediaPlayer.create(this, soundId[pos]);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.start();
-        }
-        catch (IOException e) {
-            Log.e(TAG, "No file.");
+            if(soundMs > 0) {
+               mediaPlayer.seekTo(soundMs);
+            }
+            Log.d(TAG, "Media duration" + mediaPlayer.getDuration() + "/ " + soundMs);
         }
         catch (IllegalArgumentException e) {
             Log.e(TAG, "error in load sound.");
         }
         catch (IllegalStateException e) {
             Log.e(TAG, "error in load sound.");
+        }
+        finally {
+            loading = false;
         }
     }
 
@@ -383,13 +366,11 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
         headTransform.getForwardVector(forwardVec, 0);
         int pos = determinePos();
         int soundPos = mediaPlayer.getCurrentPosition() % mediaPlayer.getDuration();
-        Log.i(TAG, "Sound pos: "+soundPos);
         if(pos != lastSound)
         {
-            lastSound = pos;
             loadSound(pos, soundPos);
+            lastSound = pos;
         }
-        Log.i(TAG, "the pos is:" + pos);
 
         // Update the 3d audio engine with the most recent head rotation.
         headTransform.getQuaternion(headRotation, 0);
