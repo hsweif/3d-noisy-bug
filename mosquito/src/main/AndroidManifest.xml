@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.google.vr.sdk.samples.hellovr"
+      package="com.hsuanwei.mosquito"
       android:versionCode="190204066"
       android:versionName="1.200.0">
 

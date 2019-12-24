@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.vr.sdk.samples.hellovr;
+package com.hsuanwei.mosquito;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

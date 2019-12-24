@@ -1,13 +1,4 @@
 // This is a configuration file used to determine all the projects prior to
 // building them.
 
-// Explicitly load all the SDK samples using their full path.
-include ':samples:sdk-hellovr'
-
-// NDK samples are disabled by default because they need the Android NDK to be
-// installed in addition to the SDK. To build them, first extract the NDK .so
-// files by running "./gradlew :extractNdk" which will create a libraries/jni
-// folder. Then uncomment these lines to enable the NDK samples and synchronize
-// Android Studio.
-//include ':samples:ndk-hellovr'
-//include ':samples:ndk-hellovrbeta'
+include ':mosquito'

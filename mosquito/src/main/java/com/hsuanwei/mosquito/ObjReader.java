@@ -1,4 +1,4 @@
-package com.google.vr.sdk.samples.hellovr;
+package com.hsuanwei.mosquito;
 
 import android.content.Context;
 import android.util.Log;

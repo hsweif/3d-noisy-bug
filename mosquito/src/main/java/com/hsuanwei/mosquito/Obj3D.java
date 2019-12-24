@@ -1,4 +1,4 @@
-package com.google.vr.sdk.samples.hellovr;
+package com.hsuanwei.mosquito;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
