@@ -56,8 +56,8 @@ import javax.microedition.khronos.egl.EGLConfig;
  * Daydream mode, the user can use the controller to position the cursor, and use the controller
  * buttons to invoke the trigger action.
  */
-public class HelloVrActivity extends GvrActivity implements GvrView.StereoRenderer {
-    private static final String TAG = "HelloVrActivity";
+public class MainActivity extends GvrActivity implements GvrView.StereoRenderer {
+    private static final String TAG = "MainActivity";
 
     private static final int TARGET_MESH_COUNT = 3;
 
@@ -70,8 +70,6 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
 
     private static final float MIN_TARGET_DISTANCE = 3.0f;
     private static final float MAX_TARGET_DISTANCE = 3.5f;
-    // private static final String OBJECT_SOUND_FILE = "audio/HelloVR_Loop.ogg";
-    private static final String OBJECT_SOUND_FILE = "audio/mosquito/1.wav";
     private static final String SUCCESS_SOUND_FILE = "audio/HelloVR_Activation.ogg";
     private static final float DEFAULT_FLOOR_HEIGHT = -1.6f;
 
@@ -146,7 +144,6 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
     private float[] forwardVec;
 
     private MediaPlayer mediaPlayer;
-    private AssetManager assetManager;
 
     private Properties gvrProperties;
     private boolean initialized = false;
@@ -185,9 +182,8 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
     }
 
     private void initSound() {
-        assetManager = getAssets();
-        soundId = new int[50];
-        for(int i = 1; i <= 50; i ++) {
+        soundId = new int[voiceFileNum];
+        for(int i = 1; i <= voiceFileNum; i ++) {
             soundId[i-1] = getResources().getIdentifier("m_"+i, "raw", getPackageName());
         }
         initialized = true;
@@ -378,7 +374,6 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
                 headRotation[0], headRotation[1], headRotation[2], headRotation[3]);
         // Regular update call to GVR audio engine.
         gvrAudioEngine.update();
-
         Util.checkGlError("onNewFrame");
     }
 
@@ -394,18 +389,14 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
         // the room. However, the color buffer is still cleared because it may
         // improve performance.
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
         // Apply the eye transformation to the camera.
         Matrix.multiplyMM(view, 0, eye.getEyeView(), 0, camera, 0);
-
         // Build the ModelView and ModelViewProjection matrices
         // for calculating the position of the target object.
         float[] perspective = eye.getPerspective(Z_NEAR, Z_FAR);
-
         Matrix.multiplyMM(modelView, 0, view, 0, modelTarget, 0);
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
         drawTarget();
-
         // Set modelView for the room, so it's drawn in the correct location
         Matrix.multiplyMM(modelView, 0, view, 0, modelRoom, 0);
         Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
@@ -436,7 +427,6 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
         float cross_val = f_x*z - f_z*x;
         float step = 50.0f / 2.0f;
         boolean is_left = cross_val < 0.0f;
-        // Log.i(TAG, "angle_"+ratio + "is left:" + is_left);
         if(is_left) {
             if(ratio >= 0.5f) {
                 return (int)(1.0f + (ratio-0.5f) * step);
@@ -465,13 +455,13 @@ public class HelloVrActivity extends GvrActivity implements GvrView.StereoRender
         Util.checkGlError("drawRoom");
     }
 
+
     /**
      * Called when the Cardboard trigger is pulled.
      */
     @Override
     public void onCardboardTrigger() {
         Log.i(TAG, "onCardboardTrigger");
-
         if (isLookingAtTarget()) {
             successSourceId = gvrAudioEngine.createStereoSound(SUCCESS_SOUND_FILE);
             gvrAudioEngine.playSound(successSourceId, false /* looping disabled */);
